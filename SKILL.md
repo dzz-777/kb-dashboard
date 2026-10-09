@@ -2,7 +2,7 @@
 name: kb-dashboard
 description: This skill should be used when the user wants a visual dashboard of their ima knowledge base — triggered by phrases like "知识库看板", "生成知识图谱", "ima 看板", "知识库可视化", "看板", or "知识库结构图". It pulls the current structure from ima (read-only, via ima-mcp) and renders a self-contained HTML dashboard with a collapsible folder tree, KPI gauges, layer bar/pie charts, and a folder-level knowledge graph. Supports per-library or global scope.
 version: 1.0.0
-author: 宗宗（戴宗宗）
+author: dzz-777
 triggers:
   - 知识库看板
   - 生成知识图谱
@@ -22,7 +22,7 @@ agent_created: true
 
 ## Overview
 
-为宗宗的 ima 知识库生成一份**全局快照看板**——双击即看的 HTML，包含结构树（根→子目录，可折叠）、KPI 仪表、分层柱状图、方法卡四环节饼图、folder 级知识图谱。解决「ima 个人版无原生结构/图谱可视化看板」的缺口，让宗宗随时用「上帝视角」看见整个库的状态、哪里空、哪里堵。
+为你的 ima 知识库生成一份**全局快照看板**——双击即看的 HTML，包含结构树（根→子目录，可折叠）、KPI 仪表、分层柱状图、方法卡四环节饼图、folder 级知识图谱。解决「ima 个人版无原生结构/图谱可视化看板」的缺口，让**用户**随时用「上帝视角」看见整个库的状态、哪里空、哪里堵。
 
 **特性**：
 - 纯只读拉取 ima 数据，绝不动库。
@@ -41,7 +41,7 @@ agent_created: true
 
 - 个人主库看板：`请生成我的 ima 知识库看板（个人主库），让我用上帝视角看看结构、空壳夹和 Express 缺口。`
 - 全局三库看板：`生成 ima 全局看板，把个人主库 / 公司库 / 资料收集库并排对比。`
-- 公司库看板：`生成区别品牌知识库（公司）的看板。`
+- 公司库看板：`生成你的品牌知识库（公司库）的看板。`
 
 ## 输出格式
 
@@ -56,27 +56,27 @@ agent_created: true
 |---|---|---|
 | 「知识库看板」「我的库看板」（默认） | `main` | 个人主库 |
 | 「全局看板」「整体看板」「所有库」 | `all` | 三库并排 tab |
-| 「公司库看板」「区别库看板」 | `company` | 区别品牌知识库（公司）|
+| 「公司库看板」「品牌库看板」 | `company` | 你的品牌知识库（公司库）|
 | 「资料库看板」「收集库看板」 | `material` | 资料收集库 |
 
 > 若用户未指定，默认 `main`（个人主库，图谱效果最好）。涉及 `all` 时，先简短确认是否要三库全量（数据量较大），再执行。
 
-scope 只是语义标签；**真正的库 ID 由 Step 1 自动探测、或从上方「目标库 ID」表取（作者示例）**。使用者切勿套用作者 ID，应先 `get_knowledge_base_list` 拿自己的库再填。
+scope 只是语义标签；**真正的库 ID 由 Step 1 自动探测、或从上方「目标库 ID」表取（示例）**。使用者切勿套用示例 ID，应先 `get_knowledge_base_list` 拿自己的库再填。
 
 ## 目标库 ID（使用者须替换为自己库）
 
-> ⚠️ **去个人化提醒（上架必读）**：下表是**作者（宗宗）个人的 ima 库 ID**，仅作者本人有效。公开上架后，**使用者首次运行必须先获取自己的库 ID**，不要直接套用下表。
+> ⚠️ **去个人化提醒（上架必读）**：下表是**作者个人的 ima 库 ID 示例**，仅作占位。公开上架后，**使用者首次运行必须先获取自己的库 ID**，不要直接套用下表。
 >
 > **自动探测（推荐）**：先调 `mcp__ima-mcp__get_knowledge_base_list` 列出你账号下全部库（含 `knowledge_base_id` 与库名）；再用 `mcp__ima-mcp__get_knowledge_list`（不带 folder_id）拉该库顶层 folder 列表。把返回的真实 ID 填进 DATA JSON 即可，无需硬编码。
 >
-> 下表作为**作者默认示例**保留，方便作者本人直接复用；他人请忽略、按上面自动探测流程替换。
+> 下表作为**默认示例**保留，仅作占位说明；使用者请按上面自动探测流程替换为自己的库 ID。
 
-| 库（作者示例） | knowledge_base_id | 关键 folder_id |
+| 库（示例占位，请替换） | knowledge_base_id | 关键 folder_id |
 |---|---|---|
-| 个人主库·戴宗宗的知识库 | `001a977664004911` | 元层 `folder_7486327218003432`；方法论中枢 `folder_7486326815348031`；定位/品类 `folder_7486327729706110`；策略/品牌战略 `folder_7486327775845700`；识别设计 `folder_7486327813594268`；营销传播 `folder_7486327847149363`；项目实战 `folder_7488484247880321`；案例库 `folder_7485620330976627`；Areas：创业·商业探索 `folder_7490332207890773`／理财·财务 `folder_7490332254030561`／法务 `folder_7490332304359838`／管理 `folder_7490332342110083`／哲学·人生意义·价值创造 `folder_7490332392442517` |
-| 区别品牌知识库（公司）| `7487406454362519` | 区别方法论 `folder_7492515284393342`；元层 `folder_7492515234055026` |
-| 资料收集库 | `7486067221485638` | （按文件夹分组，无需逐子夹枚举）|
-| 书籍萃取库 | `7497955799994204` | （元层基座版 v2，独立质检，一般不在看板主视图）|
+| 你的个人主库 | `<你的主库ID>` | `<元层 folder_id>`；`<方法论中枢 folder_id>`；`<识别设计 folder_id>`；`<营销传播 folder_id>`；`<项目实战 folder_id>`；`<案例库 folder_id>` |
+| 你的品牌知识库（公司库）| `<你的公司库ID>` | `<区别方法论 folder_id>`；`<元层 folder_id>` |
+| 资料收集库 | `<你的资料收集库ID>` | （按文件夹分组，无需逐子夹枚举）|
+| 书籍萃取库 | `<你的书籍萃取库ID>` | （独立质检，一般不在看板主视图）|
 
 > folder ID 可能随 ima 结构微调而漂移。若拉取返回空或异常，用 `mcp__ima-mcp__get_knowledge_list`（无 folder_id）重新拉顶层确认当前 ID。
 
@@ -84,7 +84,7 @@ scope 只是语义标签；**真正的库 ID 由 Step 1 自动探测、或从上
 
 ### Step 1 · 拉取 folder 树（只读）
 
-> **先定库 ID（去个人化关键）**：若 DATA 里还没有 `knowledge_base_id`，先调 `mcp__ima-mcp__get_knowledge_base_list` 列出账号下全部库，让用户选 / 按库名匹配 scope；再把真实 ID 填入。不要写死作者示例 ID。
+> **先定库 ID（去个人化关键）**：若 DATA 里还没有 `knowledge_base_id`，先调 `mcp__ima-mcp__get_knowledge_base_list` 列出账号下全部库，让用户选 / 按库名匹配 scope；再把真实 ID 填入。不要写死示例 ID。
 
 对每个目标库，调用 `mcp__ima-mcp__get_knowledge_list`：
 1. 先拉**顶层**（参数 `{knowledge_base_id, limit:50}`，不带 folder_id）→ 得到 root 的子节点列表（folder + 散文件）。
@@ -103,8 +103,8 @@ scope 只是语义标签；**真正的库 ID 由 Step 1 自动探测、或从上
   "generated_at": "2026-09-02 15:36",
   "scope": "main",
   "libraries": [{
-    "id": "001a977664004911",
-    "name": "戴宗宗的知识库",
+    "id": "<你的主库ID>",
+    "name": "你的知识库",
     "note": "可选·诚实边界说明（覆盖默认文案）",
     "kpis": {"topFolders":9,"totalDocs":172,"methodCards":101,"metaLayer":15,"emptyAreas":3,"express":"薄"},
     "tree": [
@@ -114,7 +114,7 @@ scope 只是语义标签；**真正的库 ID 由 Step 1 自动探测、或从上
     ],
     "topCounts": [["元层",15],["方法论中枢",101],["项目实战",4],["品牌手册-案例库",54],["哲学",0],["管理",1],["法务",0],["理财·财务",0],["创业·商业探索",1]],
     "methodStage": [["定位/品类",15],["策略/品牌战略",40],["识别设计",20],["营销传播",15]],
-    "graph": {"nodes":[{"name":"戴宗宗的知识库","count":172,"cat":0},{"name":"元层","count":15,"cat":1},{"name":"方法论中枢","count":101,"cat":1},{"name":"定位/品类","count":15,"cat":2}],"links":[{"source":0,"target":1},{"source":0,"target":2},{"source":2,"target":3}]}
+    "graph": {"nodes":[{"name":"你的知识库","count":172,"cat":0},{"name":"元层","count":15,"cat":1},{"name":"方法论中枢","count":101,"cat":1},{"name":"定位/品类","count":15,"cat":2}],"links":[{"source":0,"target":1},{"source":0,"target":2},{"source":2,"target":3}]}
   }]
 }
 ```
@@ -140,7 +140,7 @@ python3 ~/.workbuddy/skills/kb-dashboard/scripts/build_dashboard.py \
 
 ### Step 4 · 交付与刷新
 
-用 `present_files` 展示生成的 HTML（自动打开浏览器预览）。告知宗宗：**这是快照，想看最新状态随时让我重跑**。
+用 `present_files` 展示生成的 HTML（自动打开浏览器预览）。告知用户：**这是快照，想看最新状态随时让我重跑**。
 
 ## 进阶模式：卡片级关系链图谱（可选）
 
@@ -151,16 +151,16 @@ python3 ~/.workbuddy/skills/kb-dashboard/scripts/build_dashboard.py \
 3. 将卡片作为节点、挂接关系作为 links，生成第二张图谱（卡片级网络）。
 4. 可并入同一 HTML 的「关系链」tab，或单独输出。
 
-> 此模式成本较高（需逐卡读取内容），仅在宗宗明确要「关系链/真网络」时启用，不要默认跑。
+> 此模式成本较高（需逐卡读取内容），仅在用户明确要「关系链/真网络」时启用，不要默认跑。
 
-## 注意事项（诚实边界，必须向宗宗说明）
+## 注意事项（诚实边界，必须向用户说明）
 
 1. **ima 个人版无原生图谱数据**：看板「知识图谱」= folder 层级从属关系还原（真实）；卡片级「挂接卡」需进阶模式读卡。
 2. **快照非实时**：数据固定为生成时刻。真·实时需本地服务代理 ima API（配 `~/.config/ima/` 凭证 + 常驻），当前未做。
 3. **需联网加载 ECharts**：HTML 通过 CDN 引入图表库，离线双击可能图表不渲染（结构树/KPI 仍可用）。
 4. **只读**：本 skill 只拉取与生成，绝不写库、建夹、改标签。
 5. **比例真相**：看板如实暴露空壳 Areas、Express 薄、资产 vs 订阅失衡——这是看板的价值，不是缺陷。
-6. **不绑定个人库**：本 skill 不写死任何个人 ima 库。作者预填的 folder ID 仅为本人便利；使用者须按 Step 1 自动探测替换为自己的库 ID 后才能正确拉取。
+6. **不绑定个人库**：本 skill 不写死任何个人 ima 库。示例 folder ID 仅为占位说明；使用者须按 Step 1 自动探测替换为自己的库 ID 后才能正确拉取。
 
 ## Resources
 
