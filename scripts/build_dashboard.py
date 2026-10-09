@@ -15,8 +15,8 @@ kb-dashboard · 看板渲染脚本
   "scope": "main|company|material|all",          # 范围
   "libraries": [                                 # 一个或多个库
     {
-      "id": "001a977664004911",
-      "name": "戴宗宗的知识库",
+      "id": "<你的主库ID>",
+      "name": "<你的知识库名称>",
       "note": "可选·诚实边界说明",
       "kpis": {"topFolders":9,"totalDocs":172,"methodCards":101,"metaLayer":15,"emptyAreas":3,"express":"薄"},
       "tree": [                                  # 结构树(根的子节点列表)
