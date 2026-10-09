@@ -1,14 +1,20 @@
 ---
 name: kb-dashboard
-description: This skill should be used when the user wants a visual dashboard of their ima knowledge base — triggered by phrases like "知识库看板", "生成知识图谱", "ima 看板", "知识库可视化", "看板", or "知识库结构图". It pulls the current structure from ima (read-only, via ima-mcp) and renders a self-contained HTML dashboard with a collapsible folder tree, KPI gauges, layer bar/pie charts, and a folder-level knowledge graph. Supports per-library or global scope.
-version: 1.0.0
+description: This skill generates a read-only visual dashboard of the user's ima knowledge base (via ima-mcp). Trigger ONLY when the user explicitly asks for an ima knowledge base dashboard, structure overview, or folder-level map — e.g. "知识库看板", "ima 知识库结构图", "生成 ima 知识库图谱", "ima 看板", "看看我的 ima 库长啥样". It pulls the current structure from ima (read-only) and renders a self-contained HTML dashboard (collapsible folder tree, KPI gauges, bar/pie charts, folder-level graph). Does NOT trigger on generic "看板"/"dashboard"/"知识图谱" requests unrelated to an ima knowledge base.
+version: 1.0.4
 author: dzz-777
+allowed-tools:
+  - mcp__ima-mcp__get_knowledge_base_list
+  - mcp__ima-mcp__get_knowledge_list
+  - mcp__ima-mcp__fetch_media_content
+  - Bash(python3 *)
+  - present_files
 triggers:
   - 知识库看板
-  - 生成知识图谱
+  - ima 知识库结构图
+  - 生成 ima 知识库图谱
   - ima 看板
   - 知识库可视化
-  - 知识库结构图
   - 看看我的库长啥样
 tags:
   - ima
@@ -31,9 +37,10 @@ agent_created: true
 
 ## 触发条件（When to use）
 
-- 用户说「知识库看板」「生成知识图谱」「ima 看板」「知识库可视化」「知识库结构图」「看看我的库现在长啥样」。
+- 用户说「知识库看板」「生成 ima 知识库图谱」「ima 知识库结构图」「ima 看板」「知识库可视化」「看看我的库现在长啥样」。
 - 用户想定期巡检知识库结构、空壳夹、Express 缺口。
-- **不做**：实时自动刷新（个人版无开放 API，见诚实边界）、写库、改结构。
+- **严格范围**：本 skill 只服务于 **ima 知识库**的结构可视化。用户如果只是说「给我做个看板」「画个 dashboard」「生成知识图谱」（未指明 ima 知识库），**不应触发**——那可能是 BI/前端/其它需求，需先确认是否针对 ima 库。
+- **不做**：实时自动刷新（个人版无开放 API，见诚实边界）、写库、改结构、非 ima 库的图表。
 
 ## 提示词模板（可直接复制）
 
