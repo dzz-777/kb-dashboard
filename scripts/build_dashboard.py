@@ -81,7 +81,7 @@ DEMO_DATA = {
 
 
 def load_echarts_inline():
-    """读取包内 echarts.min.js，返回内联脚本内容。缺失时返回 None（回退在线 CDN）。"""
+    """读取包内 echarts.min.js，返回内联脚本内容。缺失时返回 None（v1.1.1 起不再回退在线 CDN，由调用方报错退出）。"""
     if os.path.exists(ECHARTS_PATH):
         with open(ECHARTS_PATH, "r", encoding="utf-8") as f:
             return f.read()
@@ -126,14 +126,14 @@ def render(data, template_path, out_path):
     # 用紧凑但可读的中文 JSON 注入；ensure_ascii=False 保留中文
     injected = json.dumps(data, ensure_ascii=False, indent=2)
     html = tpl.replace(placeholder, injected)
-    # 内嵌 ECharts：产物完全离线自包含；包内缺失时回退在线 CDN
+    # 内嵌 ECharts：产物完全离线自包含（v1.1.1 起不再回退在线 CDN，杜绝任何远程脚本加载）
     echarts_js = load_echarts_inline()
     if echarts_js and "/*ECHARTS_INLINE*/" in html:
         html = html.replace("/*ECHARTS_INLINE*/", echarts_js)
     elif not echarts_js:
-        html = html.replace(
-            "<script>/*ECHARTS_INLINE*/</script>",
-            '<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>')
+        print("[错误] 包内 assets/echarts.min.js 缺失，无法生成离线自包含看板。", file=sys.stderr)
+        print("       本 skill 不回退在线 CDN。请从官方发布包恢复 assets/echarts.min.js（Apache-2.0）后重跑。", file=sys.stderr)
+        sys.exit(1)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
     return out_path

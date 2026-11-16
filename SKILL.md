@@ -1,7 +1,7 @@
 ---
 name: kb-dashboard
 description: This skill generates a read-only visual dashboard of the user's ima knowledge base (via ima-mcp). Trigger ONLY when the user explicitly asks for an ima knowledge base dashboard, structure overview, or folder-level map — e.g. "知识库看板", "ima 知识库结构图", "生成 ima 知识库图谱", "ima 看板", "看看我的 ima 库长啥样". It pulls the current structure from ima (read-only) and renders a self-contained HTML dashboard (collapsible folder tree, KPI gauges, bar/pie charts, folder-level graph). Does NOT trigger on generic "看板"/"dashboard"/"知识图谱" requests unrelated to an ima knowledge base.
-version: 1.1.0
+version: 1.1.1
 author: dzz-777
 display_name: "IMA 知识库可视化看板"
 display_name_en: "IMA Knowledge Base Dashboard"
@@ -185,7 +185,7 @@ python3 <skill目录>/scripts/build_dashboard.py \
 
 1. **ima 个人版无原生图谱数据**：看板「知识图谱」= folder 层级从属关系还原（真实）；卡片级「挂接卡」需进阶模式读卡。
 2. **快照非实时**：数据固定为生成时刻。真·实时需本地服务代理 ima API（配 `~/.config/ima/` 凭证 + 常驻），当前未做。
-3. **离线可用**：产物 HTML 已内嵌 ECharts（Apache-2.0），断网双击也能完整渲染；仅当包内 `assets/echarts.min.js` 缺失时才回退在线 CDN。
+3. **离线可用·零远程加载**：产物 HTML 已内嵌 ECharts（Apache-2.0），断网双击也能完整渲染；v1.1.1 起不再回退在线 CDN——包内 `assets/echarts.min.js` 缺失时构建报错提示恢复，产物不含任何远程脚本引用。
 4. **只读**：本 skill 只拉取与生成，绝不写库、建夹、改标签。
 5. **比例真相**：看板如实暴露空壳 Areas、Express 薄、资产 vs 订阅失衡——这是看板的价值，不是缺陷。
 6. **标签统计依赖打标质量**：标签维度统计（v1.1.0）只统计实际写在卡片 front-matter/文末标签区里的标签；未打标的项只能计入「未打标」档，无法凭空补齐。
