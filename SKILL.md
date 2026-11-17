@@ -1,7 +1,7 @@
 ---
 name: kb-dashboard
 description: This skill generates a read-only visual dashboard of the user's ima knowledge base (via ima-mcp). Trigger ONLY when the user explicitly asks for an ima knowledge base dashboard, structure overview, or folder-level map — e.g. "知识库看板", "ima 知识库结构图", "生成 ima 知识库图谱", "ima 看板", "看看我的 ima 库长啥样". It pulls the current structure from ima (read-only) and renders a self-contained HTML dashboard (collapsible folder tree, KPI gauges, bar/pie charts, folder-level graph). Does NOT trigger on generic "看板"/"dashboard"/"知识图谱" requests unrelated to an ima knowledge base.
-version: 1.1.2
+version: 1.1.3
 author: dzz-777
 display_name: "IMA 知识库可视化看板"
 display_name_en: "IMA Knowledge Base Dashboard"
@@ -47,6 +47,20 @@ agent_created: true
 - 纯只读拉取 ima 数据，绝不动库。
 - 自包含单文件 HTML（内嵌 ECharts，亮/暗双主题，右上角切换）。
 - 支持单库（个人主库 / 公司库 / 资料收集）或三库全局（tab 切换）。
+
+## 环境自检（无 ima-mcp 环境第一眼看这里）
+
+本 skill 的正式流程需要 ima-mcp 工具；**工具不可用时不要报错中断**，按以下顺序执行：
+
+```bash
+# 1) 零依赖自检：校验包完整性 + 数据校验器 + demo 端到端
+python3 scripts/build_dashboard.py --selftest
+
+# 2) 零依赖体验：内置演示数据端到端生成示例看板
+python3 scripts/build_dashboard.py --demo --out ./demo.html
+```
+
+两条命令均不依赖 ima-mcp、不联网。`--selftest` 全部通过 = 本 skill 在当前环境可正常运行；`--demo` 产出约 1MB 自包含 HTML（内嵌 ECharts）。拿到真实结构 JSON 后用 `--data` 正式生成。
 
 ## 触发条件（When to use）
 

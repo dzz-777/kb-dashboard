@@ -143,9 +143,39 @@ def main():
     ap = argparse.ArgumentParser(description="生成 ima 知识库看板 HTML（无参数运行打印引导；--demo 零依赖端到端体验）")
     ap.add_argument("--data", default=None, help="结构 JSON 路径（与 --demo 二选一）")
     ap.add_argument("--demo", action="store_true", help="使用内置演示数据端到端生成（无需 ima-mcp）")
+    ap.add_argument("--selftest", action="store_true", help="零依赖自检：包完整性+数据校验器+demo端到端（无 ima-mcp 环境先跑这条）")
     ap.add_argument("--out", default=None, help="输出 HTML 路径(默认 ./kb_dashboard_YYYY-MM-DD.html)")
     ap.add_argument("--template", default=DEFAULT_TEMPLATE, help="模板 HTML 路径")
     args = ap.parse_args()
+
+    if args.selftest:
+        ok = True
+        for f in (DEFAULT_TEMPLATE, ECHARTS_PATH):
+            if os.path.exists(f):
+                print("[自检] 资源存在: %s (%d KB)" % (os.path.basename(f), os.path.getsize(f)//1024))
+            else:
+                print("[自检][失败] 缺失: %s" % f); ok = False
+        import copy as _copy
+        try:
+            validate(_copy.deepcopy(DEMO_DATA))
+            print("[自检] 数据校验器(内置演示数据): 通过")
+        except Exception as e:
+            print("[自检][失败] 演示数据未过校验: %s" % e); ok = False
+        import tempfile, subprocess
+        with tempfile.TemporaryDirectory() as td:
+            tmp_out = os.path.join(td, "selftest.html")
+            r = subprocess.run([sys.executable, os.path.abspath(__file__), "--demo", "--out", tmp_out],
+                               capture_output=True, text=True)
+            if r.returncode == 0 and os.path.exists(tmp_out) and os.path.getsize(tmp_out) > 100_000:
+                h = open(tmp_out, encoding="utf-8").read()
+                if "echarts" in h and "{{" not in h:
+                    print("[自检] demo 端到端: 通过 (%d KB, echarts 内嵌, 无占位符残留)" % (os.path.getsize(tmp_out)//1024))
+                else:
+                    print("[自检][失败] demo 产物异常(缺 echarts 或有占位符残留)"); ok = False
+            else:
+                print("[自检][失败] demo 运行失败: %s" % (r.stderr or "")[:200]); ok = False
+        print("[自检] 结论: %s" % ("全部通过，本 skill 在无 ima-mcp 环境下可正常运行" if ok else "存在失败项，请检查包完整性"))
+        return
 
     if args.demo:
         import copy
