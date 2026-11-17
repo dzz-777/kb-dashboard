@@ -140,7 +140,7 @@ def render(data, template_path, out_path):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="生成 ima 知识库看板 HTML")
+    ap = argparse.ArgumentParser(description="生成 ima 知识库看板 HTML（无参数运行打印引导；--demo 零依赖端到端体验）")
     ap.add_argument("--data", default=None, help="结构 JSON 路径（与 --demo 二选一）")
     ap.add_argument("--demo", action="store_true", help="使用内置演示数据端到端生成（无需 ima-mcp）")
     ap.add_argument("--out", default=None, help="输出 HTML 路径(默认 ./kb_dashboard_YYYY-MM-DD.html)")
@@ -158,7 +158,13 @@ def main():
             print("❌ 数据校验失败: %s" % e, file=sys.stderr)
             sys.exit(1)
     else:
-        ap.error("必须提供 --data <结构.json> 或 --demo")
+        # 无参数：友好引导而非报错退出（沙箱/首次运行先看这里）
+        print("两种运行方式：")
+        print("  1) 零依赖体验（无需 ima-mcp/数据）：python3 build_dashboard.py --demo")
+        print("     → 用内置演示数据端到端生成一份示例看板 HTML")
+        print("  2) 正式生成：先从 ima 导出库结构 JSON，再执行")
+        print("     python3 build_dashboard.py --data 结构.json [--out 看板.html]")
+        print("数据格式与进阶用法见 SKILL.md。")
         return
 
     if args.out is None:
